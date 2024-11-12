@@ -4,8 +4,11 @@ services:
         image: 'pgvector/pgvector:pg17'
         ports:
             - '${FORWARD_DB_PORT:-5432}:5432'
-        env_file:
-            - .env
+        environment:
+            PGPASSWORD: '${DB_PASSWORD:-secret}'
+            POSTGRES_DB: '${DB_DATABASE}'
+            POSTGRES_USER: '${DB_USERNAME}'
+            POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
         volumes:
             - 'db_data:/var/lib/postgresql/data'
             - './initpgvector.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
@@ -15,7 +18,6 @@ services:
             test: ["CMD", "pg_isready", "-q", "-d", "${DB_DATABASE}", "-U", "${DB_USERNAME}"]
             retries: 3
             timeout: 5s
-        user: "${UID}:${GID}"
     app:
         container_name: app_py
         image: 'python:3.11-bullseye'
