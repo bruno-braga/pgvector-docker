@@ -24,8 +24,9 @@ services:
         env_file:
             - .env
         volumes:
-            - './python:/app:delegated'
+            - './python:/app'
             - '.env:/app/.env'
+            - 'pip_cache:/root/.cache/pip'
         working_dir: /app
         command: tail -f /dev/null
         networks:
@@ -33,10 +34,11 @@ services:
         depends_on:
             - db
         tty: true
-        user: "${UID}:${GID}"
 networks:
     net:
         driver: bridge
 volumes:
     db_data:
+        driver: local
+    pip_cache:
         driver: local
