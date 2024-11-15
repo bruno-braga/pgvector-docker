@@ -1,0 +1,8 @@
+openai
+tiktoken
+PyPDF2
+tqdm
+python-dotenv
+pyyaml
+psycopg2
+pgvector
