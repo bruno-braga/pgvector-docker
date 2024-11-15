@@ -3,6 +3,7 @@ import numpy as np
 from PyPDF2 import PdfReader
 from psycopg2.extras import Json
 from pgvector.psycopg2 import register_vector
+from psycopg2.extras import execute_values
 from sentence_transformers import SentenceTransformer
 from tqdm import tqdm
 
@@ -49,16 +50,23 @@ def merge_lines(text):
         
     return merged
 
+
 sentences = merge_lines(text.split("\n"))
 # sentences[0:5]
 
 embeddings = model.encode(sentences)
 
-insert = "INSERT INTO embeddings (value) VALUES (%s::vector)"
+data = [(sentence, embedding.tolist()) for embedding, sentence in zip(embeddings, sentences)]
+insert = "INSERT INTO items (text, embedding) VALUES %s"
 
-for idx, embedding in tqdm(enumerate(embeddings), total=len(embeddings)):
-    embedding_list = embedding.tolist()
-    cur.execute(insert, (embedding_list,))
+execute_values(
+    cur,
+    insert,
+    data,
+    template="(%s, %s::vector)",
+    page_size=1000,
+    fetch=False
+)
 
 db.conn.commit()
 db.conn.close()

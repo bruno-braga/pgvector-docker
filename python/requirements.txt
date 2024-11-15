@@ -1,8 +1,7 @@
-openai
-tiktoken
-PyPDF2
-tqdm
 python-dotenv
-pyyaml
-psycopg2
+psycopg2-binary
 pgvector
+sentence-transformers
+PyPDF2
+numpy
+tqdm
