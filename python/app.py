@@ -50,6 +50,21 @@ def merge_lines(text):
         
     return merged
 
+def insert_items(data):
+    insert = "INSERT INTO items (text, embedding) VALUES %s"
+
+    execute_values(
+        cur,
+        insert,
+        data,
+        template="(%s, %s::vector)",
+        page_size=1000,
+        fetch=False
+    )
+
+    db.conn.commit()
+    db.conn.close()
+
 
 sentences = merge_lines(text.split("\n"))
 # sentences[0:5]
@@ -57,16 +72,4 @@ sentences = merge_lines(text.split("\n"))
 embeddings = model.encode(sentences)
 
 data = [(sentence, embedding.tolist()) for embedding, sentence in zip(embeddings, sentences)]
-insert = "INSERT INTO items (text, embedding) VALUES %s"
-
-execute_values(
-    cur,
-    insert,
-    data,
-    template="(%s, %s::vector)",
-    page_size=1000,
-    fetch=False
-)
-
-db.conn.commit()
-db.conn.close()
+insert_items(data)
