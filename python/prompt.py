@@ -50,4 +50,4 @@ def build(query):
 
     queries = queries + respostas
 
-    return queries, prompt_template
+    return queries, prompt_template, system_prompt
