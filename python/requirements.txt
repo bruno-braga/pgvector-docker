@@ -3,5 +3,4 @@ psycopg2-binary
 pgvector
 sentence-transformers
 PyPDF2
-numpy
-tqdm
+openai
