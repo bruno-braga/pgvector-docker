@@ -1,20 +1,10 @@
-from PyPDF2 import PdfReader
-
-from psycopg2.extras import Json
-from pgvector.psycopg2 import register_vector
-
 from sentence_transformers import SentenceTransformer
-
 import get_completion
-
 import yaml
 import json
-
 import db
 
 model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
-
-cur = db.conn.cursor()
 
 query = "Que modelos de LLMs são avaliados e qual é o principal resultado do artigo?"
 
