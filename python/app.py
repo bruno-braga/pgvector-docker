@@ -5,46 +5,16 @@ from pgvector.psycopg2 import register_vector
 
 from sentence_transformers import SentenceTransformer
 
-from openai import OpenAI
+import get_completion
 
-import os
 import yaml
 import json
 
 import db
 
 model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 cur = db.conn.cursor()
-
-def get_completion(prompt, system_prompt, model="gpt-4o-mini", json_format=False):
-    """
-    Obtém uma resposta do modelo de linguagem usando a API OpenAI.
-
-    Args:
-        prompt (str): O prompt principal a ser enviado ao modelo
-        system_prompt (str): O prompt de sistema que define o comportamento do modelo
-        model (str, optional): Nome do modelo a ser usado. Padrão é "gpt-4o-mini"
-        json_format (bool, optional): Se True, força a resposta em formato JSON. Padrão é False
-
-    Returns:
-        str: A resposta gerada pelo modelo
-    """
-    messages = [
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": prompt}
-    ]
-    
-    response = client.chat.completions.create(
-        model=model,
-        messages=messages,
-        temperature=0.0,
-        max_tokens=500,
-        response_format={"type": "json_object"} if json_format else None
-    )
-    
-    return response.choices[0].message.content
 
 query = "Que modelos de LLMs são avaliados e qual é o principal resultado do artigo?"
 
@@ -56,7 +26,7 @@ prompt_template = prompts["Prompt"]
 
 prompt = prompts["Prompt_Expansao"].format(query=query)
 
-response = get_completion(prompt, "", json_format=True)
+response = get_completion.get_completion(prompt, "", json_format=True)
 
 response_json = json.loads(response)
 queries = response_json['termos']
@@ -71,7 +41,11 @@ for query_ in queries:
 
     encoded_queries.append(vector_str)
 
-distance_comparisons = [f"embedding <=> {vec}" for vec in encoded_queries]
+distance_comparisons = []
+for vec in encoded_queries:
+    comparison = f"embedding <=> {vec}"
+    distance_comparisons.append(comparison)
+
 distance_clause = f"LEAST({', '.join(distance_comparisons)})"
 
 cur.execute(
@@ -93,8 +67,10 @@ formatted_chunks = "\n".join([f"{chunk}\n" for chunk in all_docs])
 
 prompt = prompt_template.format(chunks=formatted_chunks, query=query)
 
-response = get_completion(prompt, system_prompt)
+response = get_completion.get_completion(prompt, system_prompt)
 
 print(prompt)
+
 print(response)
+
 print(results)
