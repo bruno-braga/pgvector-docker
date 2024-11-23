@@ -1,4 +1,6 @@
 import os
+import json
+import yaml
 from openai import OpenAI
 
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
@@ -30,3 +32,22 @@ def get_completion(prompt, system_prompt, model="gpt-4o-mini", json_format=False
     )
     
     return response.choices[0].message.content
+
+def build(query):
+    with open("prompt_template.yml", "r") as file:
+        prompts = yaml.safe_load(file)
+
+    system_prompt = prompts["System_Prompt"]
+    prompt_template = prompts["Prompt"]
+
+    prompt = prompts["Prompt_Expansao"].format(query=query)
+
+    response = get_completion(prompt, "", json_format=True)
+
+    response_json = json.loads(response)
+    queries = response_json['termos']
+    respostas = response_json['respostas_ficticias']
+
+    queries = queries + respostas
+
+    return queries, prompt_template
