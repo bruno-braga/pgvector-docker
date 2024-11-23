@@ -31,3 +31,30 @@ def insert_items(data):
     conn.commit()
     conn.close()
 
+
+def get_items(queries, model):
+    encoded_queries = []
+    for query_ in queries:
+        query_embedding = model.encode(query_)
+        vector_str = f"'[{','.join(map(str, query_embedding))}]'::vector"
+
+        encoded_queries.append(vector_str)
+
+    distance_comparisons = []
+    for vec in encoded_queries:
+        comparison = f"embedding <=> {vec}"
+        distance_comparisons.append(comparison)
+
+    distance_clause = f"LEAST({', '.join(distance_comparisons)})"
+
+    cur.execute(
+        f"""
+        SELECT DISTINCT text, {distance_clause} as distance
+        FROM items 
+        ORDER BY distance
+        LIMIT 10
+        """
+    )
+
+    return cur.fetchall()
+
