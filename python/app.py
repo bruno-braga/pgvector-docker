@@ -6,7 +6,8 @@ import db
 
 model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 
-query = "Que modelos de LLMs são avaliados e qual é o principal resultado do artigo?"
+# query = "Que modelos de LLMs são avaliados e qual é o principal resultado do artigo?"
+query = "O que significa NOMA?"
 queries, prompt_template, system_prompt = prompt.build(query)
 
 results = db.get_items(queries, model)
@@ -20,6 +21,6 @@ formatted_prompt = prompt_template.format(chunks=formatted_chunks, query=query)
 
 response = prompt.get_completion(formatted_prompt, system_prompt)
 
-print(formatted_prompt)
 print(response)
-print(results)
+# print(formatted_prompt)
+# print(results)
