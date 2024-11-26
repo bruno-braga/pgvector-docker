@@ -17,19 +17,19 @@ conn = psycopg2.connect(
 cur = conn.cursor()
 
 def insert_items(data):
-    insert = "INSERT INTO items (text, embedding) VALUES %s"
+    insert = "INSERT INTO items (text, embedding, article_title) VALUES %s"
 
     execute_values(
         cur,
         insert,
         data,
-        template="(%s, %s::vector)",
+        template="(%s, %s::vector, %s)",
         page_size=1000,
         fetch=False
     )
 
     conn.commit()
-    conn.close()
+    # conn.close()
 
 
 def get_items(queries, model):
@@ -43,6 +43,7 @@ def get_items(queries, model):
             """,
             (model.encode(query_).tolist(),)
         )
+
         
     return cur.fetchall()
 
