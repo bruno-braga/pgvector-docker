@@ -17,6 +17,8 @@ for folder in os.listdir('./articles'):
             context = Context(folder)
             title, sentences = context.extract(os.path.join('./articles', folder, file))
 
+            print(title)
+
             embeddings = model.encode(sentences)
 
             data = []
