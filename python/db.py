@@ -36,7 +36,7 @@ def get_items(queries, model):
     for query_ in queries:
         cur.execute(
             """
-            SELECT text, embedding
+            SELECT text, embedding, article_title
             FROM items
             ORDER BY embedding <-> %s::vector
             LIMIT 10
