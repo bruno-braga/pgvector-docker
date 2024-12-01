@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <title>My app</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://unpkg.com/vue@3.2.31/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/@inertiajs/inertia@0.11.1"></script>
+    <script src="https://unpkg.com/@inertiajs/inertia-vue3@0.6.0/dist/index.umd.js"></script>
+    <script src="https://unpkg.com/@inertiajs/progress@0.2.7"></script>
+  </head>
+  <body>
+    <div id="app" data-page='{{ page | tojson }}'></div>
+
+    <!-- Application initialization at end of body -->
+    <script src="{{ url_for('static', filename='js/components/Home.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  </body>
+</html>

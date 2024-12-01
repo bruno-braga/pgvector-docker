@@ -13,7 +13,7 @@ services:
             - 'db_data:/var/lib/postgresql/data'
             - './initpgvector.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
         networks:
-            - net
+            - rag_net
         healthcheck:
             test: ["CMD", "pg_isready", "-q", "-d", "${DB_DATABASE}", "-U", "${DB_USERNAME}"]
             retries: 3
@@ -21,6 +21,8 @@ services:
     app:
         container_name: app_py
         image: 'python:3.11-bullseye'
+        ports:
+            - '5000:5000'
         env_file:
             - .env
         volumes:
@@ -28,14 +30,18 @@ services:
             - '.env:/app/.env'
             - 'pip_cache:/root/.cache/pip'
         working_dir: /app
-        command: tail -f /dev/null
+        command: ./entrypoint.sh
+        environment:
+            - FLASK_APP=api.py
+            - FLASK_DEBUG=1
         networks:
-            - net
+            - rag_net
         depends_on:
             - db
         tty: true
 networks:
-    net:
+    rag_net:
+        name: rag_net
         driver: bridge
 volumes:
     db_data:
