@@ -26,7 +26,7 @@ services:
         env_file:
             - .env
         volumes:
-            - './python:/app'
+            - './app:/app'
             - '.env:/app/.env'
             - 'pip_cache:/root/.cache/pip'
         working_dir: /app
