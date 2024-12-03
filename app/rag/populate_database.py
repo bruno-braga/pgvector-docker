@@ -1,4 +1,3 @@
-from PyPDF2 import PdfReader
 from sentence_transformers import SentenceTransformer
 from pgvector.psycopg2 import register_vector
 
