@@ -1,8 +1,0 @@
-python-dotenv
-psycopg2-binary
-pgvector
-sentence-transformers
-PyPDF2
-openai
-flask
-flask-inertia
