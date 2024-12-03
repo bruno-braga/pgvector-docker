@@ -1,1 +1,9 @@
-Flask>=2.0.0 
+python-dotenv
+psycopg2-binary
+pgvector
+sentence-transformers
+PyPDF2
+openai
+flask
+flask-inertia
+bs4

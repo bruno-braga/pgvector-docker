@@ -21,7 +21,6 @@ services:
     app:
         build: .
         container_name: app_py
-        # image: 'python:3.11-bullseye'
         ports:
             - '5000:5000'
         env_file:
