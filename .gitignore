@@ -1,4 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+*/__pycache__/
+*/*/__pycache__/
+*/*/*/__pycache__/
+
+# Virtual environments
 app/venv/
-app/__pycache__/
 env/
+venv/
+
+# Environment variables
 .env
