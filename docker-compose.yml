@@ -19,8 +19,9 @@ services:
             retries: 3
             timeout: 5s
     app:
+        build: .
         container_name: app_py
-        image: 'python:3.11-bullseye'
+        # image: 'python:3.11-bullseye'
         ports:
             - '5000:5000'
         env_file:
@@ -29,10 +30,11 @@ services:
             - './app:/app'
             - '.env:/app/.env'
             - 'pip_cache:/root/.cache/pip'
+            - 'venv:/app/venv'
         working_dir: /app
         command: ./entrypoint.sh
         environment:
-            - FLASK_APP=api.py
+            - FLASK_APP=api/runner.py
             - FLASK_DEBUG=1
         networks:
             - rag_net
@@ -47,4 +49,6 @@ volumes:
     db_data:
         driver: local
     pip_cache:
+        driver: local
+    venv:
         driver: local
