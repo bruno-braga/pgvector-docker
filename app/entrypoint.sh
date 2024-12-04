@@ -1,3 +1,3 @@
 #!/bin/bash
 pip install -r requirements.txt
-python api/runner.py
+python src/runner.py

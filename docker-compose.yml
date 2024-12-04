@@ -33,7 +33,7 @@ services:
         working_dir: /app
         command: ./entrypoint.sh
         environment:
-            - FLASK_APP=api/runner.py
+            - FLASK_APP=src/runner.py
             - FLASK_DEBUG=1
         networks:
             - rag_net

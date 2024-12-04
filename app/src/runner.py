@@ -1,7 +1,7 @@
 from flask import Flask
 from api import init_app
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='static/')
 
 app = init_app(app)
 
