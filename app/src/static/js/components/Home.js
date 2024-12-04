@@ -56,7 +56,7 @@ const Home = {
             search
         }
     },
-    template: `
+    template: /* html */ ` 
         <div class="container mx-auto px-4 py-8">
             <div class="grid grid-cols-2 gap-4">
                 <!-- Left Column -->
