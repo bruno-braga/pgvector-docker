@@ -1,105 +1,120 @@
-const { ref, onMounted, computed } = Vue
+const { ref, onMounted, onBeforeUnmount, computed } = Vue
 
 const Home = {
     setup() {
+        const messages = ref([])
         const query = ref('O que é NOMA?')
-        const chunks = ref('')
-        const prompt = ref({
-            Prompt: '',
-            System_Prompt: '',
-            Prompt_Expansao: ''
-        })
-
-        const processedPrompt = computed(() => {
-            if (!prompt.value) return ''
-            return prompt.value.Prompt
-                .replace('{query}', query.value || '{query}')
-                .replace('{chunks}', chunks.value || '{chunks}')
-        })
-
-        const loadPromptTemplate = async () => {
-            try {
-                const response = await fetch('/api/get_prompt')
-                const getChunks = await fetch(`/api/fetch_chunks?search=${encodeURIComponent(query.value)}`)
-
-                const chunkss = await getChunks.json()
-                const data = await response.json()
-                
-                prompt.value = data || 'No prompt available'
-                chunks.value = chunkss.chunks || 'No chunks available'
-
-                console.log('Loaded prompt:', prompt.value)
-            } catch (error) {
-                console.error('Error loading prompt template:', error)
-            }
-        }
+        const answer = ref(null)
+        const typedInstances = ref({})
+        const isLoading = ref(false)
 
         const search = async () => {
+            isLoading.value = true
             try {
-                const getChunks = await fetch(`/api/fetch_chunks?search=${encodeURIComponent(query.value)}`)
-                const chunkss = await getChunks.json()
+                const response = await fetch(`/rag/search/${encodeURIComponent(query.value)}`)
+                const data = await response.json()
 
-                chunks.value = chunkss.chunks
-            } catch (error) {
-                console.error('Error fetching chunks:', error)
+                const newMessage = {
+                    question: query.value,
+                    answer: data.response,
+                    id: Date.now()
+                }
+
+                messages.value.push(newMessage)
+
+                query.value = ''
+
+                await Vue.nextTick()
+
+                const latestAnswerElement = document.querySelector(`#answer-${newMessage.id}`)
+                typedInstances.value[newMessage.id] = new Typed(latestAnswerElement, {
+                    strings: [data.response],
+                    typeSpeed: 10,
+                    cursor: '|'
+                })
+
+                return data
+            } finally {
+                isLoading.value = false
             }
         }
 
-        onMounted(() => {
-            loadPromptTemplate()
+        const handleSubmit = async (e) => {
+            e.preventDefault()
+            if (query.value.trim()) {
+                await search()
+            }
+        }
+
+        onMounted(async () => {
+            // await search()
         })
-        
+
+        onBeforeUnmount(() => {
+            Object.values(typedInstances.value).forEach(instance => {
+                if (instance) {
+                    instance.destroy()
+                }
+            })
+        })
+
         return {
+            answer,
             query,
-            prompt,
-            processedPrompt,
-            search
+            search,
+            messages,
+            handleSubmit,
+            isLoading
         }
     },
     template: /* html */ ` 
-        <div class="container mx-auto px-4 py-8">
-            <div class="grid grid-cols-2 gap-4">
-                <!-- Left Column -->
-                <div class="bg-white p-4 rounded shadow">
-                    <h2 class="text-xl font-bold mb-4">Search</h2>
+        <div class="container mx-auto px-4 py-8 max-w-screen-md h-screen flex flex-col">
+            <div class="flex-1 overflow-y-auto mb-24">
+                <div class="space-y-4">
+                    <div v-for="message in messages" :key="message.id" class="bg-white p-4 rounded shadow">
+                        <div class="font-semibold mb-2">{{ message.question }}</div>
+                        <span :id="'answer-' + message.id"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded shadow fixed bottom-0 left-1/2 -translate-x-1/2 mb-4 max-w-4xl w-[calc(100%-2rem)]">
+                <form @submit="handleSubmit" class="flex">
                     <input 
                         type="text" 
                         v-model="query" 
                         class="border p-2 rounded w-full"
-                        placeholder="Search..."
+                        placeholder="Ask something... please! :-)"
                     >
-
-                    <button type="button" @click="search" class="bg-blue-500 text-white px-4 py-2 rounded mt-2">Search</button>
-                </div>
-
-                <!-- Middle Column -->
-                <div class="bg-white p-4 rounded shadow">
-                    <h2 class="text-xl font-bold mb-4">Prompt Template</h2>
-                    <p class="whitespace-pre-wrap bg-gray-100 p-4 rounded">
-                        <div v-if="prompt.System_Prompt">{{ prompt.System_Prompt }}</div>
-                        <svg v-else class="animate-spin h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <button 
+                        type="submit" 
+                        class="bg-blue-500 text-white px-4 py-2 rounded ml-2 flex items-center" 
+                        :disabled="isLoading"
+                    >
+                        <svg 
+                            v-if="isLoading"
+                            class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" 
+                            xmlns="http://www.w3.org/2000/svg" 
+                            fill="none" 
+                            viewBox="0 0 24 24"
+                        >
+                            <circle 
+                                class="opacity-25" 
+                                cx="12" 
+                                cy="12" 
+                                r="10" 
+                                stroke="currentColor" 
+                                stroke-width="4"
+                            ></circle>
+                            <path 
+                                class="opacity-75" 
+                                fill="currentColor" 
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
                         </svg>
-                    </p>
-
-                    <p class="whitespace-pre-wrap bg-gray-100 p-4 rounded">
-                        <div v-if="processedPrompt">{{ processedPrompt }}</div>
-                        <svg v-else class="animate-spin h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                    </p>
-                </div>
-
-                <!-- Right Column
-                <div class="bg-white p-4 rounded shadow">
-                    <h2 class="text-xl font-bold mb-4">Details</h2>
-                    <div v-if="prompt">
-                        <p class="mb-2">Template loaded successfully</p>
-                    </div>
-                </div>
-                -->
+                        {{ isLoading ? 'Thinking...' : 'Ask' }}
+                    </button>
+                </form>
             </div>
         </div>
     `
