@@ -37,15 +37,21 @@ class Document(db.Model):
         }
 
     @classmethod
-    def get_chunks(cls, queries, model):
+    def get_chunks(cls, queries, model, distance_metric='l2'):
         results = []
+
+        if distance_metric == 'l2':
+            distance_metric_function = cls.embedding.l2_distance
+        else:
+            distance_metric_function = cls.embedding.cosine_distance
+
         for query_ in queries:
             query_results = db.session.query(
                 cls.text.label('text'),
                 cls.article_title.label('article_title'),
                 cls.embedding.label('embedding')
             ).order_by(
-                cls.embedding.l2_distance(model.encode(query_).tolist())
+                distance_metric_function(model.encode(query_).tolist())
             ).limit(10).all()
             
             serializable_results = [

@@ -18,7 +18,7 @@ os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 rag_bp = Blueprint('rag', __name__)
 
 @rag_bp.route('/get_chunks/<string:query>')
-def get_chunks(query):
+def get_chunks(query, distance_metric='l2'):
     queries, prompt_template, system_prompt = prompt.build(query)
     chunks = Document.get_chunks(queries, minilm_l6_v2)
 
@@ -27,7 +27,7 @@ def get_chunks(query):
     })
 
 @rag_bp.route('/search/<string:query>')
-def search(query):
+def search(query, distance_metric='l2'):
 
     queries, prompt_template, system_prompt = prompt.build(query)
     chunks = Document.get_chunks(queries, minilm_l6_v2)
@@ -69,8 +69,12 @@ def evaluate_response():
     
     # Make internal request to search endpoint
     query = data['query']
+
     search_response = search(query)
     search_data = json.loads(search_response.get_data(as_text=True))
+
+    search_cosine_response = search(query, distance_metric='cosine')
+    search_cosine_data = json.loads(search_cosine_response.get_data(as_text=True))
     
     evaluation_data = [{
         "question": data['query'],
@@ -79,9 +83,15 @@ def evaluate_response():
         "reference": data['reference']
     }]
 
-    dataset = Dataset.from_list(evaluation_data)
+    evaluation_data_cosine = [{
+        "question": data['query'],
+        "answer": search_cosine_data['response'],
+        "contexts": data['chunks'],
+        "reference": data['reference']
+    }]
 
-    llm = OpenAI()
+    dataset = Dataset.from_list(evaluation_data)
+    dataset_cosine = Dataset.from_list(evaluation_data_cosine)
 
     results = evaluate(
         dataset,
@@ -93,7 +103,22 @@ def evaluate_response():
         ]
     )
 
-    print(results)
+    results_cosine = evaluate(
+        dataset_cosine,
+        metrics=[
+            LLMContextRecall(),
+            Faithfulness(),
+            FactualCorrectness(),
+            SemanticSimilarity()
+        ]
+    )
+
+    serializable_cosine = {
+        'context_recall': results_cosine['context_recall'],
+        'faithfulness': results_cosine['faithfulness'],
+        'factual_correctness': results_cosine['factual_correctness'],
+        'semantic_similarity': results_cosine['semantic_similarity']
+    }
 
     # Convert results to a serializable format
     serializable_results = {
@@ -105,5 +130,6 @@ def evaluate_response():
 
     return jsonify({
         'rag_answer': search_data['response'],
-        'results': serializable_results
+        'results': serializable_results,
+        'results_cosine': serializable_cosine
     })

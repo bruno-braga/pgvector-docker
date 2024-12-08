@@ -87,6 +87,7 @@ const Report = {
                 chunks: textChunks,
                 reference: referenceAnswer.value
             })
+            console.log(evaluationResponse)
             evaluation.value = typeof evaluationResponse === 'string' 
                 ? JSON.parse(evaluationResponse) 
                 : evaluationResponse
@@ -143,26 +144,29 @@ const Report = {
                         <div>{{ evaluation.rag_answer }}</div>
                     </div>
 
-                    <div class="font-semibold mb-2">Evaluation:</div>
-                    <div class="space-y-2">
-                        <div v-for="(value, key) in evaluation.results" :key="key" class="bg-gray-50 p-4 rounded">
-                            <span class="font-medium">{{ key.replace('_', ' ').charAt(0).toUpperCase() + key.slice(1) }}:</span>
-                            <span class="ml-2">{{ value[0] }}</span>
+                    <div class="flex gap-4">
+                        <div class="flex-1">
+                            <div class="font-semibold mb-2">Evaluation (L2):</div>
+                            <div class="space-y-2">
+                                <div v-for="(value, key) in evaluation.results" :key="key" class="bg-gray-50 p-4 rounded">
+                                    <span class="font-medium">{{ key.replace('_', ' ').charAt(0).toUpperCase() + key.slice(1) }}:</span>
+                                    <span class="ml-2">{{ value[0] }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex-1">
+                            <div class="font-semibold mb-2">Evaluation (Cosine):</div>
+                            <div class="space-y-2">
+                                <div v-for="(value, key) in evaluation.results_cosine" :key="key" class="bg-gray-50 p-4 rounded">
+                                    <span class="font-medium">{{ key }}:</span>
+                                    <span class="ml-2">{{ value[0] }}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- <div class="bg-white p-4 rounded shadow fixed bottom-0 mb-[100px] left-1/2 -translate-x-1/2 mb-4 max-w-4xl w-[calc(100%-2rem)]">
-            //     <form class="flex w-full">
-            //         <select
-            //             v-model="selectedTitle"
-            //             class="border p-2 rounded w-full"
-            //         >
-            //             <option v-for="title in titles" :value="title">{{ title }}</option>
-            //         </select>
-            //     </form>
-            // </div> -->
 
             <div class="bg-white p-4 rounded shadow fixed bottom-0 left-1/2 -translate-x-1/2 mb-4 max-w-4xl w-[calc(100%-2rem)]">
                 <form @submit="handleSubmit" class="flex">
