@@ -79,16 +79,3 @@ class Context:
 
     def extract(self, file):
         return self.strategy.extract(file)
-
-
-
-
-# # Example usage
-# if __name__ == "__main__":
-#     html_file = "./article.html"
-#     content = extract_content(html_file)
-    
-#     print("Title:", content['title'])
-#     print("\nArticle Content:")
-#     for i, block in enumerate(content['article'], 1):
-#         print(f"\n{i}. {block}")
