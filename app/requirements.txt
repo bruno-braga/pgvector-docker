@@ -11,3 +11,4 @@ sqlalchemy
 pgvector
 flask-sqlalchemy
 py-mon
+ragas
