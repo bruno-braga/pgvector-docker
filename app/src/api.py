@@ -7,6 +7,22 @@ from Http.Blueprints.Home import home_bp
 from Http.Blueprints.Rag import rag_bp
 
 def init_app(app):
+    """
+        Params
+        ______
+        - app: Aplicação flask a ser inicializada
+
+
+        Inicializa a aplicação registrando:
+        - Rotas especificas para cada modulo do sistema(blueprints)
+        - Inertia para renderização da interface
+        - Banco de dados
+
+        returns
+        _______
+        - app: Aplicação flask inicializada
+    """
+
     app.register_blueprint(home_bp)
     app.register_blueprint(rag_bp, url_prefix='/rag')
 
