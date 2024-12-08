@@ -104,5 +104,6 @@ def evaluate_response():
     }
 
     return jsonify({
+        'rag_answer': search_data['response'],
         'results': serializable_results
     })

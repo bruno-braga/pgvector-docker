@@ -87,18 +87,10 @@ const Report = {
                 chunks: textChunks,
                 reference: referenceAnswer.value
             })
-            console.log('Evaluation Response:', evaluationResponse)
             evaluation.value = typeof evaluationResponse === 'string' 
                 ? JSON.parse(evaluationResponse) 
                 : evaluationResponse
             isEvaluationLoading.value = false
-
-            console.log(evaluation)
-
-
-            // if (query.value.trim()) {
-            //     await search()
-            // }
         }
 
         return {
@@ -118,12 +110,12 @@ const Report = {
             referenceAnswer,
 
             isEvaluationLoading,
-            evaluation
+            evaluation,
         }
     },
     template: /* html */ ` 
         <div class="container mx-auto px-4 py-8 max-w-screen-md h-screen flex flex-col">
-            <div class="flex-1 overflow-y-auto mb-24 max-h-[400px]">
+            <div id="chunks-section" class="flex-1 overflow-y-auto mb-10 max-h-[400px]">
                 <Loader v-if="isChunksLoading" text="Loading chunks..." />
                 <div v-else class="space-y-4">
                     <div v-for="chunk in chunks" :key="chunk.id" class="bg-white p-4 rounded shadow">
@@ -133,17 +125,24 @@ const Report = {
                 </div>
             </div>
 
-            <div class="mb-24">
+            <div id="reference-section" class="mb-10">
                 <Loader v-if="isReferenceLoading" text="Loading reference answer..." />
                 <div v-else class="space-y-4">
-                    <div class="font-semibold mb-2" v-if="referenceAnswer !== ''">Reference Answer:</div>
-                    <div v-if="referenceAnswer !== ''">{{ referenceAnswer }}</div>
+                    <div v-if="referenceAnswer !== ''" class="bg-white p-4 rounded shadow">
+                        <div class="font-semibold mb-2">Reference Answer:</div>
+                        <div>{{ referenceAnswer }}</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="mb-24">
+            <div id="evaluation-section" class="mb-10">
                 <Loader v-if="isEvaluationLoading" text="Evaluating... this might take a while." />
                 <div v-else-if="evaluation && evaluation.results" class="space-y-4">
+                    <div v-if="evaluation.rag_answer" class="bg-white p-4 rounded shadow">
+                        <div class="font-semibold mb-2">RAG Answer:</div>
+                        <div>{{ evaluation.rag_answer }}</div>
+                    </div>
+
                     <div class="font-semibold mb-2">Evaluation:</div>
                     <div class="space-y-2">
                         <div v-for="(value, key) in evaluation.results" :key="key" class="bg-gray-50 p-4 rounded">
@@ -154,16 +153,16 @@ const Report = {
                 </div>
             </div>
 
-            <div class="bg-white p-4 rounded shadow fixed bottom-0 mb-[100px] left-1/2 -translate-x-1/2 mb-4 max-w-4xl w-[calc(100%-2rem)]">
-                <form class="flex w-full">
-                    <select
-                        v-model="selectedTitle"
-                        class="border p-2 rounded w-full"
-                    >
-                        <option v-for="title in titles" :value="title">{{ title }}</option>
-                    </select>
-                </form>
-            </div>
+            <!-- <div class="bg-white p-4 rounded shadow fixed bottom-0 mb-[100px] left-1/2 -translate-x-1/2 mb-4 max-w-4xl w-[calc(100%-2rem)]">
+            //     <form class="flex w-full">
+            //         <select
+            //             v-model="selectedTitle"
+            //             class="border p-2 rounded w-full"
+            //         >
+            //             <option v-for="title in titles" :value="title">{{ title }}</option>
+            //         </select>
+            //     </form>
+            // </div> -->
 
             <div class="bg-white p-4 rounded shadow fixed bottom-0 left-1/2 -translate-x-1/2 mb-4 max-w-4xl w-[calc(100%-2rem)]">
                 <form @submit="handleSubmit" class="flex">
