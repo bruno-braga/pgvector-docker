@@ -5,7 +5,8 @@ const createInertiaApp = window.InertiaVue.createInertiaApp
 createInertiaApp({
   resolve: name => {
     const pages = {
-      'Home': Home
+      'Home': Home,
+      'Report': Report
     }
 
     return pages[name]

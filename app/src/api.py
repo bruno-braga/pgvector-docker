@@ -5,6 +5,7 @@ from database.db_singleton import db
 
 from Http.Blueprints.Home import home_bp
 from Http.Blueprints.Rag import rag_bp
+from Http.Blueprints.Report import report_bp
 
 def init_app(app):
     """
@@ -24,6 +25,7 @@ def init_app(app):
     """
 
     app.register_blueprint(home_bp)
+    app.register_blueprint(report_bp)
     app.register_blueprint(rag_bp, url_prefix='/rag')
 
     inertia = Inertia()

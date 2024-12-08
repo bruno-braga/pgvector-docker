@@ -1,4 +1,4 @@
-const { ref, onMounted, onBeforeUnmount, computed } = Vue
+const { ref, onMounted, onBeforeUnmount, computed, defineProps } = Vue
 
 const Home = {
     setup() {
@@ -13,6 +13,8 @@ const Home = {
             try {
                 const response = await fetch(`/rag/search/${encodeURIComponent(query.value)}`)
                 const data = await response.json()
+
+                console.log(data)
 
                 const newMessage = {
                     question: query.value,
@@ -47,7 +49,7 @@ const Home = {
         }
 
         onMounted(async () => {
-            // await search()
+            await search()
         })
 
         onBeforeUnmount(() => {
@@ -86,6 +88,7 @@ const Home = {
                         class="border p-2 rounded w-full"
                         placeholder="Ask something... please! :-)"
                     >
+
                     <button 
                         type="submit" 
                         class="bg-blue-500 text-white px-4 py-2 rounded ml-2 flex items-center" 

@@ -20,6 +20,11 @@ class Document(db.Model):
             'embedding': self.embedding.tolist() if self.embedding is not None else None
         }
 
+    @classmethod
+    def get_distinct_titles(cls):
+        results = db.session.query(cls.article_title).distinct().all()
+        return [result[0] for result in results]
+
     @classmethod    
     def get_limit10(cls):
         return cls.query.limit(10).all()
