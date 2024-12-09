@@ -34,6 +34,30 @@ def get_completion(prompt, system_prompt, model="gpt-4o-mini", json_format=False
     return response.choices[0].message.content
 
 def build(query):
+    """
+    Constrói os prompts e consultas necessários para o sistema RAG.
+
+    Parâmetros
+    ----------
+    query : str
+        A consulta original do usuário
+
+    Retorna
+    -------
+    tuple
+        Uma tupla contendo três elementos:
+        - queries (list): Lista de consultas expandidas e processadas
+        - prompt_template (str): Template do prompt a ser usado
+        - system_prompt (str): Prompt do sistema que define o comportamento do modelo
+
+    Detalhes
+    --------
+    Esta função:
+    1. Carrega os templates de prompt do arquivo YAML
+    2. Expande a consulta original em múltiplas variações
+    3. Processa as respostas fictícias para enriquecer a busca
+    """
+
     current_dir = os.path.dirname(os.path.abspath(__file__))
     template_path = os.path.join(current_dir, "prompt_template.yml")
     
@@ -56,6 +80,28 @@ def build(query):
     return queries, prompt_template, system_prompt
 
 def generate_reference_answer(query):
+    """
+    Gera uma resposta de referência para uma determinada query.
+
+    Parâmetros
+    ----------
+    query : str
+        A consulta para a qual se deseja gerar uma resposta de referência
+
+    Retorna
+    -------
+    str
+        Uma string JSON contendo:
+        - answer: A resposta de referência gerada pelo modelo
+
+    Detalhes
+    --------
+    A função cria um prompt especializado que:
+    1. Define o contexto como especialista em PLN
+    2. Solicita uma resposta para a consulta
+    3. Força o formato de saída em JSON
+    """
+
     prompt = f"""
         Você é um especialista em processamento de linguagem natural.
 
