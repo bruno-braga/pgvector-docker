@@ -103,8 +103,6 @@ def generate_reference_answer(query):
     """
 
     prompt = f"""
-        Você é um especialista em processamento de linguagem natural.
-
         gere uma resposta para a pergunta: {query}
 
         A saida deve ser em formato JSON com o seguinte formato:
