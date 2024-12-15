@@ -138,10 +138,10 @@ const Report = {
 
             <div id="evaluation-section" class="mb-10">
                 <Loader v-if="isEvaluationLoading" text="Evaluating... this might take a while." />
-                <div v-else-if="evaluation && evaluation.results" class="space-y-4">
-                    <div v-if="evaluation.rag_answer" class="bg-white p-4 rounded shadow">
-                        <div class="font-semibold mb-2">RAG Answer:</div>
-                        <div>{{ evaluation.rag_answer }}</div>
+                <div v-else-if="evaluation.rag_answer_l2 " class="space-y-4">
+                    <div class="bg-white p-4 rounded shadow">
+                        <div class="font-semibold mb-2">RAG Answer L2:</div>
+                        <div>{{ evaluation.rag_answer_l2 }}</div>
                     </div>
 
                     <div class="flex gap-4">
