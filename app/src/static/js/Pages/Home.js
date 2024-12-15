@@ -49,7 +49,7 @@ const Home = {
         }
 
         onMounted(async () => {
-            await search()
+            // await search()
         })
 
         onBeforeUnmount(() => {
