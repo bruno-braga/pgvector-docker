@@ -47,3 +47,6 @@ def get_items(queries, model):
         
     return cur.fetchall()
 
+def clean_section_chunks():
+    cur.execute("DELETE FROM items WHERE text ~ '^[0-9]+\.\s+\w+'")
+    conn.commit()

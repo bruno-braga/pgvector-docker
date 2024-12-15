@@ -27,3 +27,5 @@ for folder in os.listdir('./articles'):
                 data.append(data_tuple)
 
             db.insert_items(data)
+
+db.clean_section_chunks()
