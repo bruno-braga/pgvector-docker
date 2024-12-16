@@ -12,12 +12,23 @@
 
 The folders represent the databases each article should be placed in the proper folder so parser.py knows how to read them.
 
+In order to download the html files we opt for an semi automated process. The file download_html.js contains a small script that downloads the html of a page for your.
+With that you can:
+
+Open an article(it has to be in one of the databases of the list)
+Open your Browser's console(i.e Ctrl + Shift + J to open Chrome's console)
+then copy and paste the js script mentioned
+
+For instance if you go to https://ieeexplore.ieee.org/document/7465730 and do the steps above you will download the HTML file. 
+After having the HTML file place it in the proper folder, in this case we should put into /rag/articles/ieeexplore
+
+
 ## How to run this
 
 Firstly, clone the repo using the command below
 
 ```
-git clone git@github.com:bruno-braga/pgvector-docker.git
+git clone https://github.com/bruno-braga/pgvector-docker.git
 cd pgvector-docker
 cp .env.example .env
 ```
@@ -38,7 +49,6 @@ docker ps
 ```
 
 Check the python container id and then:
-(Don't forget to add the articles in the proper folder according ot is database (i.e /articles/scientificdirect))
 
 
 ```
@@ -46,6 +56,9 @@ docker exec -it <python_container_id> /bin/bash
 cd /app/rag
 python populate_database.py
 ```
+
+(Don't forget to add the articles in the proper folder according ot is database (i.e /articles/scientificdirect))
+
 
 ## Folder structure & System "Architecture"
 
