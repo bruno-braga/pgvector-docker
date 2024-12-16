@@ -3,7 +3,6 @@
 ## What do you need to run this project?
 
 - Docker
-- Follow the instructions above
 - An valid OpenAI API key
     - Set the OPENAI_API_KEY environment variable in the .env file
 - Add the articles in the proper folder according ot is database (i.e /articles/scientificdirect)
