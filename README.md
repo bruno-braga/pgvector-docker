@@ -3,11 +3,6 @@
 ## What do you need to run this project?
 
 - Docker
-- An valid OpenAI API key
-    - Set the OPENAI_API_KEY environment variable in the .env file
-- Add the articles in the proper folder according ot is database (i.e /articles/scientificdirect)
-- Go inside the python docker container
-- Run python populate_database.py file
 
 ## How to run this
 
@@ -19,17 +14,29 @@ cd pgvector-docker
 cp .env.example .env
 ```
 
+Don't forget to set the OPENAI_API_KEY environment variable in the .env file
+
+
 After inside the folder do
 
 ```
 docker-compose up -d
 ```
 
-Then the images will be downloaded and the containers will be up.
+After the containers are up
 
-Also, initpgvector.sql will create the extension properly onto the DB_DATABASE and also add a table with some data as example.
+```
+docker ps
+```
 
+Check the python container id then
+Don't forget to add the articles in the proper folder according ot is database (i.e /articles/scientificdirect)
 
+```
+docker exec -it <python_container_id> /bin/bash
+cd /app/rag
+python populate_database.py
+```
 
 ## Folder structure & System "Architecture"
 
