@@ -33,6 +33,7 @@ Also, initpgvector.sql will create the extension properly onto the DB_DATABASE a
 
 ![System Architecture](./system.png)
 
+```
 ├── app/
 │   ├── rag/
 │   │   ├── articles/
@@ -62,6 +63,7 @@ Also, initpgvector.sql will create the extension properly onto the DB_DATABASE a
 │       ├── api.py
 │       └── runner.py
 
+```
 the /rag folder is where the first experiments have happened. In there right now there are two files there that are being used, they are:
 
 - populate_database.py
