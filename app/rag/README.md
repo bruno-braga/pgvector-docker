@@ -1,25 +1,22 @@
 # RAG
 
-## Descrição
+## Description
+This folder contains the initial experiments with the basic_rag files available [at this link](https://github.com/ricardoaraujo/ppgc_rag/blob/main/rag_basico.zip), where the goal was to learn the basic structure of a RAG system.
 
-Nesta pasta contém os primeiros experimentos com os arquivos de rag_basico disponibilizados [nesse link](https://github.com/ricardoaraujo/ppgc_rag/blob/main/rag_basico.zip), onde, o objetivo era aprender a estrutura basica de um sistema de RAG.
+Nevertheless, this folder was maintained because the files **populate_database.py** and **parser.py** are still used to create embeddings and store them in the database. Additionally, the articles folder is where the organizational structure was created for articles that will be parsed and inserted into the database.
 
-Ainda assim essa pasta foi mantida, pois, os arquivos **populate_database.py** e **parser.py** ainda são utilizados para criar os embeddings e armazena-los no banco de dados. Além disso, é na pasta articles que foi criada a estrutura de organização dos artigos que serão parseados e inseridos no banco de dados.
-
-## Funcionamento
+## How it Works
 
 ### parser.py
+This file implements the Strategy design pattern. This pattern is useful as it allows us to switch execution algorithms through a common interface. Furthermore, it makes it very simple to add new extraction strategies.
 
-Esse arquivo implementa o padrão de projeto chamado Strategy. Esse padrão é util pois nos permite trocar o algoritmo de execução através de uma interface em comum. Além disso, ele permite adicionar novas estratégias de extração de forma muito simples.
-
-Abaixo um diagrama que ilustra o padrão Strategy no contexto desse arquivo.
+Below is a diagram illustrating the Strategy pattern in the context of this file.
 
 ![Strategy](./strategy.png)
 
 ### populate_database.py
+This file is responsible for populating the database, and to do this, it reads all HTML files within the articles folder and uses the folder name to instantiate the correct extraction function for each file.
 
-Esse arquivo é o responsável por popular o banco de dados, e para isso, ele vai ler todos os arquivos html dentro da pasta articles e utilizando o nome da pasta irá instanciar a função de extração certa para cada arquivo.
-
-Abaixo um diagrama que ilustra o processo de popular o banco de dados.
+Below is a diagram illustrating the database population process.
 
 ![Populate Database](./populatedb.png)
