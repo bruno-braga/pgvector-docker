@@ -3,6 +3,14 @@
 ## What do you need to run this project?
 
 - Docker
+- A bunch of articles in html format
+    - Articles should be in /rag/articles
+        - currently you have 3 folders:
+            - arxiv
+            - ieeexplore
+            - scientificdirect
+
+The folders represent the databases each article should be placed in the proper folder so parser.py knows how to read them.
 
 ## How to run this
 
@@ -31,6 +39,7 @@ docker ps
 
 Check the python container id and then:
 (Don't forget to add the articles in the proper folder according ot is database (i.e /articles/scientificdirect))
+
 
 ```
 docker exec -it <python_container_id> /bin/bash
