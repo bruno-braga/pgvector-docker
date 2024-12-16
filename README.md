@@ -17,20 +17,20 @@ cp .env.example .env
 Don't forget to set the OPENAI_API_KEY environment variable in the .env file
 
 
-After inside the folder do
+After, inside the folder, do:
 
 ```
 docker-compose up -d
 ```
 
-After the containers are up
+After, the containers are up:
 
 ```
 docker ps
 ```
 
-Check the python container id then
-Don't forget to add the articles in the proper folder according ot is database (i.e /articles/scientificdirect)
+Check the python container id and then:
+(Don't forget to add the articles in the proper folder according ot is database (i.e /articles/scientificdirect))
 
 ```
 docker exec -it <python_container_id> /bin/bash
